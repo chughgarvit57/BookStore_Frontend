@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   BookOpen,
   Search,
@@ -13,12 +13,27 @@ import { useAuthentication } from "../../../context/AuthContext";
 
 const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
   const { logout } = useAuthentication();
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    if (isDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
 
   return (
     <header className={styles.header}>
@@ -37,7 +52,11 @@ const Header = () => {
           />
         </div>
         <div className={styles.rightSection}>
-          <div className={styles.iconContainer} onClick={toggleDropdown}>
+          <div
+            className={styles.iconContainer}
+            onClick={toggleDropdown}
+            ref={dropdownRef}
+          >
             <User size={24} />
             <span>Profile</span>
             {isDropdownOpen && (
@@ -51,6 +70,10 @@ const Header = () => {
                 <button className={styles.loginButton} onClick={logout}>
                   LOGOUT
                 </button>
+                <div className={styles.dropdownItem}>
+                  <Package size={16} />
+                  <span>My Orders</span>
+                </div>
                 <div className={styles.dropdownItem}>
                   <Package size={16} />
                   <span>My Orders</span>

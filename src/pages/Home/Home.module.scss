@@ -1,15 +1,59 @@
 .titleContainer {
-    margin-top: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .titleContainer .bookItemsCount span.bookGeneric {
-    font-size: 2.5rem;
-    font-weight: 600;
+  font-size: 2.5rem;
+  font-weight: 600;
 }
 
 .titleContainer .bookItemsCount span.bookCount {
-    opacity: 0.5;
+  opacity: 0.5;
+}
+
+.titleContainer .filterState {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  .MuiFormControl-root {
+    margin: 0;
+  }
+
+  .MuiInputLabel-root {
+    font-size: 1rem;
+  }
+
+  .MuiSelect-root {
+    font-size: 1rem;
+  }
+}
+
+.cardsContainer {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  gap: 1rem;
+  margin-bottom: 5rem;
+  min-height: 50vh;
+}
+
+.loadingMessage,
+.noBooksMessage {
+  width: 100%;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #666;
+  margin-top: 2rem;
+}
+
+@media (max-width:420px) {
+  .titleContainer .bookItemsCount span.bookGeneric {
+    font-size: 1.5rem;
+  }
 }

@@ -70,14 +70,7 @@ const Login = () => {
       const token = response.data.token;
       localStorage.setItem("user", token);
       setUser(token);
-      setSnackbarData({
-        open: true,
-        message: "Login Successfull!",
-        severity: "success",
-      });
-      setTimeout(() => {
-        navigate("/home");
-      }, 2000);
+      navigate('/home');
     } catch (error) {
       setSnackbarData({
         open: true,
