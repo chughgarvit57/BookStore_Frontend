@@ -75,10 +75,6 @@ const Header = () => {
                   <span>My Orders</span>
                 </div>
                 <div className={styles.dropdownItem}>
-                  <Package size={16} />
-                  <span>My Orders</span>
-                </div>
-                <div className={styles.dropdownItem}>
                   <Heart size={16} />
                   <span>Wishlist</span>
                 </div>
