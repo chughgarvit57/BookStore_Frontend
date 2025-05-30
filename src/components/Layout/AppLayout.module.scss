@@ -2,10 +2,5 @@
   max-width: 1200px;
   margin: auto;
   flex: 1;
-}
-
-@media (max-width: 1100px) {
-  .mainContent {
-    max-width: 900px;
-  }
+  padding: 0 5px;
 }

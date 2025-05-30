@@ -1,15 +1,21 @@
 import styles from "./Card.module.scss";
 import { Rating } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
+import { useNavigate } from "react-router-dom";
 
-const Card = ({ title, author, price, bookImage }) => {
+const Card = ({ title, author, price, bookImage, bookId }) => {
+  const navigate = useNavigate();
   const staticRating = 4.5;
   const staticRatingCount = 20;
   const originalPrice = price + 500;
 
+  const handleCardClick = () => {
+    navigate(`/book/details/${bookId}`);
+  }
+
   return (
     <>
-      <div className={styles.card}>
+      <div className={styles.card} onClick={handleCardClick}>
         <div className={styles.imageContainer}>
           <img src={bookImage} alt={title} className={styles.bookImage} />
         </div>

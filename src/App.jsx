@@ -5,6 +5,7 @@ import Signup from "./pages/Signup/SIgnup";
 import PrivateRoutes from "./routes/PrivateRoutes";
 import Home from "../src/pages/Home/Home";
 import AppLayout from "./components/Layout/AppLayout";
+import BookDetails from "./pages/Details/BookDetails";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
         <Route element={<AppLayout />}>
           <Route element={<PrivateRoutes />}>
             <Route path="/home" element={<Home />} />
+            <Route path="/book/details/:id" element={<BookDetails />} />
           </Route>
         </Route>
       </Routes>

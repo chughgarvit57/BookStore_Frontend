@@ -19,11 +19,32 @@ export const useFetchBooks = () => {
       });
       const books = response.data || [];
       setBooks(books);
+      return books;
     } catch (error) {
       console.error("Error fetching books:", error);
       setBooks([]);
       throw error;
     }
   };
-  return { getAllBooks };
+
+  const getBookById = async (id) => {
+    try {
+      const response = await request({
+        method: "GET",
+        url: `/api/Book/BookId?bookId=${id}`,
+        data: null,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const book = response.data || null;
+      return book;
+    } catch (error) {
+      console.error("Error fetching books:", error);
+      setBooks([]);
+      throw error;
+    }
+  };
+
+  return { getAllBooks, getBookById };
 };

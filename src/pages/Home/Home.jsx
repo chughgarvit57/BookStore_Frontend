@@ -115,6 +115,7 @@ const Home = () => {
               author={book.authorName}
               price={book.price}
               bookImage={book.bookImage}
+              bookId={book.bookId}
             />
           ))
         )}
