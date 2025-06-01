@@ -1,4 +1,4 @@
-import styles from './Login.module.scss';
+import styles from "./Login.module.scss";
 import logo from "../../assets/authshopping.png";
 import { Button, CircularProgress, TextField } from "@mui/material";
 import { useState } from "react";
@@ -70,7 +70,7 @@ const Login = () => {
       const token = response.data.token;
       localStorage.setItem("user", token);
       setUser(token);
-      navigate('/home');
+      navigate("/home");
     } catch (error) {
       setSnackbarData({
         open: true,
@@ -120,7 +120,13 @@ const Login = () => {
                   helperText={errors.password}
                 />
                 <div className={styles.forgotPassword}>
-                  <span>Forgot Password?</span>
+                  <span
+                    onClick={() => {
+                      navigate("/forget-password");
+                    }}
+                  >
+                    Forgot Password?
+                  </span>
                 </div>
                 <Button
                   variant="contained"

@@ -129,6 +129,17 @@
   }
 }
 
+.cartIcon {
+  position: relative;
+}
+
+.cartQuantityIcon {
+  color: #fff;
+  position: absolute;
+  left: 70%;
+  top: 70%;
+}
+
 @media (max-width: 1100px) {
   .headerContainer {
     max-width: 900px;

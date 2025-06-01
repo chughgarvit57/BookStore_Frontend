@@ -10,8 +10,12 @@ import {
 import styles from "./Header.module.scss";
 import Input from "../../common/Input/Input";
 import { useAuthentication } from "../../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { useCart } from "../../../context/CartContext";
 
 const Header = () => {
+  const navigate = useNavigate();
+  const { items } = useCart();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -34,6 +38,10 @@ const Header = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isDropdownOpen]);
+
+  const navigateToCart = () => {
+    navigate("/cart");
+  };
 
   return (
     <header className={styles.header}>
@@ -81,9 +89,10 @@ const Header = () => {
               </div>
             )}
           </div>
-          <div className={styles.iconContainer}>
-            <ShoppingCart size={24} />
+          <div className={`${styles.iconContainer}`} onClick={navigateToCart}>
+            <ShoppingCart size={24} className={styles.cartIcon} />
             <span>Cart</span>
+            <p className={styles.cartQuantityIcon}>{items.length}</p>
           </div>
         </div>
       </div>

@@ -6,6 +6,8 @@ import { Rating } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import { useBooks } from "../../context/BookContext";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import useAddCart from "../../hooks/useAddCart";
+import SnackBar from "../../components/common/Snackbar/Snackbar";
 
 const BookDetails = () => {
   const { id } = useParams();
@@ -14,6 +16,22 @@ const BookDetails = () => {
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { addBookInCart } = useAddCart();
+
+  const [snackbarData, setSnackbarData] = useState({
+    open: false,
+    message: "",
+    severity: "error",
+  });
+
+  const handleCloseSnackbar = () => {
+    setSnackbarData((prev) => {
+      return {
+        ...prev,
+        open: false,
+      };
+    });
+  };
 
   const staticRating = 4.5;
   const staticRatingCount = 20;
@@ -54,59 +72,92 @@ const BookDetails = () => {
     return <div className={styles.errorMessage}>Book not found</div>;
   }
 
+  const addBook = async (id, quantity) => {
+    try {
+      await addBookInCart(id, quantity);
+      setSnackbarData({
+        open: true,
+        message: "Item added to cart",
+        severity: "success",
+      });
+    } catch (error) {
+      const errorMessage =
+        error.message || "Failed to add item to cart. Please try again.";
+      setSnackbarData({
+        open: true,
+        message: errorMessage,
+        severity: "error",
+      });
+    }
+  };
+
   return (
-    <div className={styles.bookDetailsContainer}>
-      <div className={styles.imageSection}>
-        <div className={styles.imageContainer}>
-          {book.bookImage ? (
-            <img
-              src={book.bookImage}
-              alt={book.bookName}
-              className={styles.bookImage}
-            />
-          ) : (
-            <div className={styles.placeholderImage}>No Image Available</div>
-          )}
+    <>
+      <div className={styles.bookDetailsContainer}>
+        <div className={styles.imageSection}>
+          <div className={styles.imageContainer}>
+            {book.bookImage ? (
+              <img
+                src={book.bookImage}
+                alt={book.bookName}
+                className={styles.bookImage}
+              />
+            ) : (
+              <div className={styles.placeholderImage}>No Image Available</div>
+            )}
+          </div>
+          <div className={styles.actionButtons}>
+            <button
+              className={styles.addToBagButton}
+              onClick={() => addBook(book.bookId, book.quantity)}
+            >
+              ADD TO BAG
+            </button>
+            <button className={styles.wishlistButton}>
+              <FavoriteBorderIcon className={styles.wishlistIcon} />
+              WISHLIST
+            </button>
+          </div>
         </div>
-        <div className={styles.actionButtons}>
-          <button className={styles.addToBagButton}>ADD TO BAG</button>
-          <button className={styles.wishlistButton}>
-            <FavoriteBorderIcon className={styles.wishlistIcon} />
-            WISHLIST
-          </button>
+        <div className={styles.detailsContainer}>
+          <h1 className={styles.title}>{book.bookName}</h1>
+          <p className={styles.author}>by {book.authorName}</p>
+          <div className={styles.ratingContainer}>
+            <span className={styles.rating}>
+              {staticRating}{" "}
+              <Rating
+                value={staticRating}
+                precision={0.5}
+                readOnly
+                size="small"
+                icon={
+                  <StarIcon fontSize="inherit" style={{ color: "#FFD700" }} />
+                }
+                emptyIcon={
+                  <StarIcon
+                    fontSize="inherit"
+                    style={{ color: "#FFD700", opacity: 0.3 }}
+                  />
+                }
+              />
+            </span>
+            <span className={styles.ratingCount}>({staticRatingCount})</span>
+          </div>
+          <p className={styles.description}>{book.description}</p>
+          <div className={styles.priceContainer}>
+            <span className={styles.price}>₹{book.price}</span>
+            <span className={styles.originalPrice}>₹{book.price + 500}</span>
+          </div>
         </div>
       </div>
-      <div className={styles.detailsContainer}>
-        <h1 className={styles.title}>{book.bookName}</h1>
-        <p className={styles.author}>by {book.authorName}</p>
-        <div className={styles.ratingContainer}>
-          <span className={styles.rating}>
-            {staticRating}{" "}
-            <Rating
-              value={staticRating}
-              precision={0.5}
-              readOnly
-              size="small"
-              icon={
-                <StarIcon fontSize="inherit" style={{ color: "#FFD700" }} />
-              }
-              emptyIcon={
-                <StarIcon
-                  fontSize="inherit"
-                  style={{ color: "#FFD700", opacity: 0.3 }}
-                />
-              }
-            />
-          </span>
-          <span className={styles.ratingCount}>({staticRatingCount})</span>
-        </div>
-        <p className={styles.description}>{book.description}</p>
-        <div className={styles.priceContainer}>
-          <span className={styles.price}>₹{book.price}</span>
-          <span className={styles.originalPrice}>₹{book.price + 500}</span>
-        </div>
-      </div>
-    </div>
+      {/* Snackbar for custom notifications */}
+      <SnackBar
+        open={snackbarData.open}
+        onClose={handleCloseSnackbar}
+        message={snackbarData.message}
+        severity={snackbarData.severity}
+      />
+    </>
   );
 };
 
