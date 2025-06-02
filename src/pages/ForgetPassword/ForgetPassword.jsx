@@ -52,7 +52,7 @@ const ForgetPassword = () => {
     } catch (error) {
       setSnackbarData({
         open: true,
-        messsage: error.response?.data?.message,
+        messsage: error.response?.data?.message || "Internal Server Error",
         severity: "error",
       });
     }
@@ -62,14 +62,14 @@ const ForgetPassword = () => {
     <>
       <header className={styles.header}>
         <div className={styles.headerContainer}>
-          <div className={styles.logoSection}>
+          <div className={styles.logo}>
             <BookOpen size={40} />
             <p>Bookstore</p>
           </div>
         </div>
       </header>
       <h1 className={styles.title}>forgot your password?</h1>
-      <section className={styles.mainContainer}>
+      <section className={styles.forgetPasswordBox}>
         <p className={styles.description}>
           Enter your email address and we'll send you a link to reset your
           password.
@@ -84,7 +84,7 @@ const ForgetPassword = () => {
             name="email"
             className={styles.emailField}
           />
-          <button disabled={loading}>
+          <button className={styles.resetPasswordButton} disabled={loading}>
             {loading ? <CircularProgress size={20} color="inherit" /> : "Reset Password"}
           </button>
         </form>
