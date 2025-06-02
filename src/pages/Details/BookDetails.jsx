@@ -25,12 +25,10 @@ const BookDetails = () => {
   });
 
   const handleCloseSnackbar = () => {
-    setSnackbarData((prev) => {
-      return {
-        ...prev,
-        open: false,
-      };
-    });
+    setSnackbarData((prev) => ({
+      ...prev,
+      open: false,
+    }));
   };
 
   const staticRating = 4.5;
@@ -60,18 +58,6 @@ const BookDetails = () => {
     fetchBookDetails();
   }, [id]);
 
-  if (loading) {
-    return <div className={styles.loadingMessage}>Loading book details...</div>;
-  }
-
-  if (error) {
-    return <div className={styles.errorMessage}>{error}</div>;
-  }
-
-  if (!book) {
-    return <div className={styles.errorMessage}>Book not found</div>;
-  }
-
   const addBook = async (id, quantity) => {
     try {
       await addBookInCart(id, quantity);
@@ -91,6 +77,18 @@ const BookDetails = () => {
     }
   };
 
+  if (loading) {
+    return <div className={styles.loadingMessage}>Loading book details...</div>;
+  }
+
+  if (error) {
+    return <div className={styles.errorMessage}>{error}</div>;
+  }
+
+  if (!book) {
+    return <div className={styles.errorMessage}>Book not found</div>;
+  }
+
   return (
     <>
       <div className={styles.bookDetailsContainer}>
@@ -109,7 +107,7 @@ const BookDetails = () => {
           <div className={styles.actionButtons}>
             <button
               className={styles.addToBagButton}
-              onClick={() => addBook(book.bookId, book.quantity)}
+              onClick={() => addBook(book.bookId, book.quantity || 1)}
             >
               ADD TO BAG
             </button>
@@ -143,14 +141,107 @@ const BookDetails = () => {
             </span>
             <span className={styles.ratingCount}>({staticRatingCount})</span>
           </div>
+          <hr />
           <p className={styles.description}>{book.description}</p>
           <div className={styles.priceContainer}>
             <span className={styles.price}>₹{book.price}</span>
             <span className={styles.originalPrice}>₹{book.price + 500}</span>
           </div>
+          <hr />
+          <div className={styles.feedbackContainer}>
+            <p className={styles.feedbackTitle}>Customer Feedback</p>
+            <div className={styles.ratingSection}>
+              <p className={styles.ratingLabel}>Overall rating</p>
+              <div className={styles.ratingContainer}>
+                <Rating
+                  value={staticRating}
+                  precision={0.5}
+                  readOnly
+                  size="medium"
+                  icon={
+                    <StarIcon fontSize="inherit" style={{ color: "#FFD700" }} />
+                  }
+                  emptyIcon={
+                    <StarIcon
+                      fontSize="inherit"
+                      style={{ color: "#FFD700", opacity: 0.3 }}
+                    />
+                  }
+                />
+              </div>
+              <div className={styles.feedbackInput}>
+                <textarea
+                  name="feedback"
+                  rows={3}
+                  id={styles.feedback}
+                  placeholder="Please provide your feedback here"
+                ></textarea>
+                <div className={styles.reviewButtonContainer}>
+                  <button className={styles.writeReviewButton} type="button">
+                    Submit
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className={styles.feedbackCustomersContainer}>
+            <div className={styles.accountLogo}>
+              <h1 className={styles.account}>GC</h1>
+            </div>
+            <div className={styles.customerFeedbackBox}>
+              <p className={styles.feedbacker}>Garvit Chugh</p>
+              <Rating
+                value={3}
+                precision={0.5}
+                readOnly
+                size="medium"
+                icon={
+                  <StarIcon fontSize="inherit" style={{ color: "#FFD700" }} />
+                }
+                emptyIcon={
+                  <StarIcon
+                    fontSize="inherit"
+                    style={{ color: "#FFD700", opacity: 0.3 }}
+                  />
+                }
+              />
+              <p className={styles.customerFeedback}>
+                Good product. Even though the translation could have been
+                better, Chanakya's neeti are thought provoking. Chanakya has
+                written on many different topics and his writings are succinct.
+              </p>
+            </div>
+          </div>
+          <div className={styles.feedbackCustomersContainer}>
+            <div className={styles.accountLogo}>
+              <h1 className={styles.account}>SS</h1>
+            </div>
+            <div className={styles.customerFeedbackBox}>
+              <p className={styles.feedbacker}>Sahil Singh</p>
+              <Rating
+                value={4.5}
+                readOnly
+                precision={0.5}
+                size="medium"
+                icon={
+                  <StarIcon fontSize="inherit" style={{ color: "#FFD700" }} />
+                }
+                emptyIcon={
+                  <StarIcon
+                    fontSize="inherit"
+                    style={{ color: "#FFD700", opacity: 0.3 }}
+                  />
+                }
+              />
+              <p className={styles.customerFeedback}>
+                Good product. Even though the translation could have been
+                better, Chanakya's neeti are thought provoking. Chanakya has
+                written on many different topics and his writings are succinct.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
-      {/* Snackbar for custom notifications */}
       <SnackBar
         open={snackbarData.open}
         onClose={handleCloseSnackbar}

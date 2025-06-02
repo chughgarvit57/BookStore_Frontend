@@ -26,12 +26,13 @@ const Card = ({ title, author, price, bookImage, bookId }) => {
             <span className={styles.rating}>
               {staticRating}{" "}
               <Rating
-                value={staticRating}
+                value={1}
+                max={1}
                 precision={0.5}
                 readOnly
                 size="small"
                 icon={
-                  <StarIcon fontSize="inherit" style={{ color: "#FFD700" }} />
+                  <StarIcon fontSize="inherit" style={{ color: "#f0f0f0" }} />
                 }
                 emptyIcon={
                   <StarIcon
