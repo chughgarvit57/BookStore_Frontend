@@ -46,7 +46,12 @@ const Header = () => {
   return (
     <header className={styles.header}>
       <div className={styles.headerContainer}>
-        <div className={styles.leftLogoSection}>
+        <div
+          className={styles.leftLogoSection}
+          onClick={() => {
+            navigate("/home");
+          }}
+        >
           <BookOpen size={40} />
           <p>BookStore</p>
         </div>
@@ -80,7 +85,13 @@ const Header = () => {
                 </button>
                 <div className={styles.dropdownItem}>
                   <Package size={16} />
-                  <span>My Orders</span>
+                  <span
+                    onClick={() => {
+                      navigate("/myOrders");
+                    }}
+                  >
+                    My Orders
+                  </span>
                 </div>
                 <div className={styles.dropdownItem}>
                   <Heart size={16} />

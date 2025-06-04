@@ -11,12 +11,23 @@ const useOrder = () => {
       url: "/api/Order/CreateOrder",
       data: orderData,
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
   };
 
-  return { createOrder };
+  const fetchOrders = async () => {
+    return await request({
+      method: "GET",
+      url: "/api/Order/GetAllOrders",
+      data: null,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  };
+
+  return { createOrder, fetchOrders };
 };
 
 export default useOrder;

@@ -126,6 +126,8 @@ const Cart = () => {
       setLoading(true);
       await createOrder(orderRequest);
       setLoading(false);
+      await removeFromCart(orderRequest.bookId);
+      setItems([]);
       const tempOrderId = uuidv4();
       navigate("/orderSuccess", {
         state: {
@@ -133,7 +135,6 @@ const Cart = () => {
           address: selectedAddress,
         },
       });
-      removeFromCart(orderRequest.bookId);
     } catch (error) {
       setSnackBarData({
         open: true,

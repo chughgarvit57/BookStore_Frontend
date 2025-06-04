@@ -10,7 +10,7 @@ export const useRemoveFromCart = () => {
       await request({
         method: "DELETE",
         url: `/api/Cart/RemoveFromCart?bookId=${id}`,
-        data: id,
+        data: null,
         headers: {
             Authorization: `Bearer ${token}`
         }
