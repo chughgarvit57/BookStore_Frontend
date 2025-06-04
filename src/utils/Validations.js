@@ -35,3 +35,23 @@ export const validateField = (name, value) => {
       return "";
   }
 };
+
+const phoneRegex = /^[0-9]{10}$/;
+export const validateAddress = (name, value) => {
+  switch (name) {
+    case "firstName":
+    case "address":
+    case "city":
+    case "state":
+    case "locality":
+      return value.trim() ? "" : `${name} is required.`;
+
+    case "phoneNumber":
+      return phoneRegex.test(value.trim())
+        ? ""
+        : "Please enter a valid 10-digit phone number.";
+
+    default:
+      return "";
+  }
+};

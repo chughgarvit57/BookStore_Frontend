@@ -43,10 +43,9 @@
 
 .cartItem {
   width: 100%;
-  display: flex;
   gap: 3rem;
-  align-items: flex-start;
   margin: 1.5rem 0;
+  
 }
 
 .cartItemImageContainer {
@@ -205,6 +204,12 @@
   }
 }
 
+
+.leftBox {
+  display: flex;
+  gap: 2rem;
+}
+
 .startBrowsingButton {
   padding: 0.75rem 1.5rem;
   background-color: #007bff;
@@ -216,5 +221,120 @@
   transition: background-color 0.2s;
   &:hover {
     background-color: #0056b3;
+  }
+}
+
+.addressBox, .orderSummaryBox {
+  border: 2px solid rgb(248, 228, 228);
+  margin-top: 15px;
+  padding: 1rem;
+  width: 100%;
+}
+
+.headerBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.addressBoxTitle {
+  text-transform: capitalize;
+}
+
+.addAddressButton {
+  border: 1px solid #A03037;
+  padding: 0.85rem 1.5rem;
+  font-size: 12px;
+  color: #A03037;
+  cursor: pointer;
+}
+
+.orderSummaryBox {
+  margin-top: 20px;
+  border: 2px solid rgb(248, 228, 228);
+  padding: 16px;
+}
+
+.headerBar {
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.addressBoxTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.orderSummaryContent {
+  padding: 16px 0;
+}
+
+.orderSummaryItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.orderSummaryLeft {
+  display: flex;
+  align-items: center;
+}
+
+.orderSummaryImage {
+  width: 60px;
+  height: 80px;
+  object-fit: cover;
+  margin-right: 16px;
+}
+
+.orderSummaryDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.orderSummaryTitle {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.orderSummaryAuthor {
+  font-size: 14px;
+  color: #666;
+  margin: 4px 0;
+}
+
+.orderSummaryPrice {
+  display: flex;
+  gap: 8px;
+}
+
+.currentPrice {
+  font-size: 16px;
+  font-weight: 500;
+  color: #000;
+}
+
+.oldPrice {
+  font-size: 14px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.checkoutButton {
+  background-color: #1976d2;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #1565c0;
   }
 }

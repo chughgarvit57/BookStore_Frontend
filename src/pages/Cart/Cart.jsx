@@ -7,28 +7,42 @@ import { useEffect, useState } from "react";
 import useRemoveFromCart from "../../hooks/useRemoveFromCart";
 import SnackBar from "../../components/common/Snackbar/Snackbar";
 import useUpdateCart from "../../hooks/useUpdateCart";
+import AddressForm from "../Address/AddressForm";
+import useOrder from "../../hooks/useOrder";
 
 const Cart = () => {
   const navigate = useNavigate();
   const { items, setItems } = useCart();
   const { getCart } = useFetchCart();
-  const [loading, setLoading] = useState(false);
   const { removeFromCart } = useRemoveFromCart();
   const { updateCart } = useUpdateCart();
-
   const [snackbarData, setSnackBarData] = useState({
-    open: true,
+    open: false,
     message: "",
     severity: "error",
   });
+  const [addressOpen, setAddressOpen] = useState(false);
+  const [showOrderSummary, setShowOrderSummary] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const { createOrder } = useOrder();
+
+  const handleContinue = (address) => {
+    console.log("Selected address:", address);
+    setSelectedAddress(address);
+    setAddressOpen(false);
+    setShowOrderSummary(true);
+  };
+
+  const handleAddress = () => {
+    setAddressOpen(true);
+    setShowOrderSummary(false);
+  };
 
   const handleCloseSnackBar = () => {
-    setSnackBarData((prev) => {
-      return {
-        ...prev,
-        open: false,
-      };
-    });
+    setSnackBarData((prev) => ({
+      ...prev,
+      open: false,
+    }));
   };
 
   const goToHome = () => {
@@ -37,12 +51,7 @@ const Cart = () => {
 
   useEffect(() => {
     const fetchCart = async () => {
-      try {
-        setLoading(true);
-        await getCart();
-      } finally {
-        setLoading(false);
-      }
+      await getCart();
     };
     fetchCart();
   }, []);
@@ -58,11 +67,6 @@ const Cart = () => {
   };
 
   const cartItems = Array.isArray(items) ? items : [];
-
-  if (loading) {
-    return <div className={styles.loadingMessage}>Loading cart...</div>;
-  }
-
   const filteredCartItems = cartItems.filter((item) => !item.isUncarted);
 
   const handleIncreaseQuantity = async (bookId, currentQuantity) => {
@@ -87,7 +91,7 @@ const Cart = () => {
     if (currentQuantity <= 1) {
       setSnackBarData({
         open: true,
-        message: "Quantity must be atleast 1",
+        message: "Quantity must be at least 1",
         severity: "warning",
       });
       return;
@@ -109,6 +113,26 @@ const Cart = () => {
     }
   };
 
+  const handleCheckout = async () => {
+    try {
+      const item = filteredCartItems[0];
+      const orderRequest = {
+        addressId: parseInt(selectedAddress.addressId, 10),
+        bookId: parseInt(item.bookId, 10),
+        quantity: parseInt(item.quantity, 10),
+      };
+      await createOrder(orderRequest);
+      navigate("/orderSuccess");6
+      removeFromCart(orderRequest.bookId);
+    } catch (error) {
+      setSnackBarData({
+        open: true,
+        message: error.message || "Failed to create order",
+        severity: "error",
+      });
+    }
+  };
+
   return (
     <>
       <div className={styles.breadcrumb}>
@@ -120,7 +144,7 @@ const Cart = () => {
       </div>
       <div className={styles.cartContainer}>
         <div className={styles.cartHeader}>
-          <h2>My Cart({filteredCartItems.length})</h2>
+          <h2>My Cart ({filteredCartItems.length})</h2>
           <div className={styles.location}>
             <MapPin size={16} className={styles.locationIcon} />
             <span>Use current location</span>
@@ -144,58 +168,133 @@ const Cart = () => {
             <>
               {filteredCartItems.map((item) => (
                 <div className={styles.cartItem} key={item.bookId}>
-                  <div className={styles.cartItemImageContainer}>
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className={styles.cartItemBookImage}
-                    />
-                  </div>
-                  <div className={styles.cartItemDetails}>
-                    <p className={styles.cartItemTitle}>{item.bookName}</p>
-                    <p className={styles.cartItemAuthor}>
-                      by {item.authorName}
-                    </p>
-                    <div className={styles.priceContainer}>
-                      <p className={styles.orginalPrice}>Rs. {item.price}</p>
-                      <p className={styles.oldPrice}>Rs. {item.price + 500}</p>
+                  <div className={styles.leftBox}>
+                    <div className={styles.cartItemImageContainer}>
+                      <img
+                        src={item.image}
+                        alt={item.bookName}
+                        className={styles.cartItemBookImage}
+                      />
                     </div>
-                    <div className={styles.itemActions}>
-                      <div className={styles.quantity}>
+                    <div className={styles.cartItemDetails}>
+                      <p className={styles.cartItemTitle}>{item.bookName}</p>
+                      <p className={styles.cartItemAuthor}>
+                        by {item.authorName}
+                      </p>
+                      <div className={styles.priceContainer}>
+                        <p className={styles.orginalPrice}>Rs. {item.price}</p>
+                        <p className={styles.oldPrice}>
+                          Rs. {item.price + 500}
+                        </p>
+                      </div>
+                      <div className={styles.itemActions}>
+                        <div className={styles.quantity}>
+                          <button
+                            onClick={() =>
+                              handleDecreaseQuantity(item.bookId, item.quantity)
+                            }
+                          >
+                            <Minus size={14} />
+                          </button>
+                          <span>{item.quantity}</span>
+                          <button
+                            onClick={() =>
+                              handleIncreaseQuantity(item.bookId, item.quantity)
+                            }
+                          >
+                            <Plus size={14} />
+                          </button>
+                        </div>
                         <button
-                          onClick={() => {
-                            handleDecreaseQuantity(item.bookId, item.quantity);
-                          }}
+                          className={styles.removeButton}
+                          onClick={() => removeItem(item.bookId)}
                         >
-                          <Minus size={14} />
-                        </button>
-                        <span>{item.quantity}</span>
-                        <button
-                          onClick={() => {
-                            handleIncreaseQuantity(item.bookId, item.quantity);
-                          }}
-                        >
-                          <Plus size={14} />
+                          Remove
                         </button>
                       </div>
-                      <button
-                        className={styles.removeButton}
-                        onClick={() => {
-                          removeItem(item.bookId);
-                        }}
-                      >
-                        Remove
-                      </button>
                     </div>
+                  </div>
+                  <div className={styles.placeOrderButtonContainer}>
+                    {!addressOpen && !showOrderSummary && (
+                      <button onClick={handleAddress}>Place Order</button>
+                    )}
                   </div>
                 </div>
               ))}
-              <div className={styles.placeOrderButtonContainer}>
-                <button>Place Order</button>
-              </div>
             </>
           )}
         </div>
+      </div>
+      <div className={styles.addressBox}>
+        <div className={styles.headerBar}>
+          <p className={styles.addressBoxTitle}>Customer Details</p>
+        </div>
+        {addressOpen && (
+          <AddressForm
+            onContinue={handleContinue}
+            setAddressOpen={setAddressOpen}
+          />
+        )}
+      </div>
+      <div className={styles.orderSummaryBox}>
+        <div className={styles.headerBar}>
+          <p className={styles.addressBoxTitle}>Order Summary</p>
+        </div>
+        {showOrderSummary ? (
+          filteredCartItems.length > 0 ? (
+            <div className={styles.orderSummaryContent}>
+              {selectedAddress && (
+                <div className={styles.selectedAddress}>
+                  <p>Delivering to: {selectedAddress.firstName}</p>
+                  <p>
+                    {selectedAddress.address}, {selectedAddress.city},{" "}
+                    {selectedAddress.state}
+                  </p>
+                </div>
+              )}
+              {filteredCartItems.map((item) => (
+                <div className={styles.cartItem} key={item.bookId}>
+                  <div className={styles.leftBox}>
+                    <div className={styles.cartItemImageContainer}>
+                      <img
+                        src={item.image}
+                        alt={item.bookName}
+                        className={styles.cartItemBookImage}
+                      />
+                    </div>
+                    <div className={styles.cartItemDetails}>
+                      <p className={styles.cartItemTitle}>{item.bookName}</p>
+                      <p className={styles.cartItemAuthor}>
+                        by {item.authorName}
+                      </p>
+                      <div className={styles.priceContainer}>
+                        <p className={styles.orginalPrice}>Rs. {item.price}</p>
+                        <p className={styles.oldPrice}>
+                          Rs. {item.price + 500}
+                        </p>
+                      </div>
+                      <div className={styles.itemActions}>
+                        <div className={styles.quantity}>
+                          <span>Quantity: {item.quantity}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.placeOrderButtonContainer}>
+                    <button
+                      className={styles.checkoutButton}
+                      onClick={handleCheckout}
+                    >
+                      CHECKOUT
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>Your cart is empty. Please add items to proceed.</p>
+          )
+        ) : null}
       </div>
       <SnackBar
         open={snackbarData.open}
