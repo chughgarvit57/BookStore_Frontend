@@ -17,6 +17,18 @@ import useAddress from "../../hooks/useAddress";
 import SnackBar from "../../components/common/Snackbar/Snackbar";
 import { validateAddress } from "../../utils/Validations";
 
+const addressTypeMapping = {
+  Home: AddressType.HOME,
+  Work: AddressType.WORK,
+  Other: AddressType.OTHER,
+};
+
+const addressTypeToString = {
+  [AddressType.HOME]: "Home",
+  [AddressType.WORK]: "Work",
+  [AddressType.OTHER]: "Other",
+};
+
 const initialForm = {
   firstName: "",
   phoneNumber: "",
@@ -24,7 +36,7 @@ const initialForm = {
   city: "",
   state: "",
   locality: "",
-  type: AddressType.HOME,
+  addressType: AddressType.HOME,
 };
 
 const AddressForm = ({ onContinue, setAddressOpen }) => {
@@ -65,8 +77,15 @@ const AddressForm = ({ onContinue, setAddressOpen }) => {
   }, []);
 
   const handleChange = ({ target: { name, value } }) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: validateAddress(name, value) }));
+    let updatedValue = value;
+    if (name === "addressType") {
+      updatedValue = addressTypeMapping[value] || AddressType.HOME;
+    }
+    setFormData((prev) => ({ ...prev, [name]: updatedValue }));
+    setErrors((prev) => ({
+      ...prev,
+      [name]: validateAddress(name, updatedValue),
+    }));
   };
 
   const handleAddressSelection = (id) => {
@@ -84,7 +103,7 @@ const AddressForm = ({ onContinue, setAddressOpen }) => {
         city: addr.city || "",
         state: addr.state || "",
         locality: addr.locality || "",
-        type: addr.type || AddressType.HOME,
+        addressType: addr.addressType || AddressType.HOME,
       });
       setErrors({});
     }
@@ -142,7 +161,7 @@ const AddressForm = ({ onContinue, setAddressOpen }) => {
         setSelectedAddressId(null);
       }
     } catch (err) {
-      showSnackbar(err.message || "Failed to save address");
+      showSnackbar(err.message || "Failed to save address. Please try again.");
     }
   };
 
@@ -157,16 +176,39 @@ const AddressForm = ({ onContinue, setAddressOpen }) => {
         <RadioGroup
           value={selectedAddressId === null ? "new" : String(selectedAddressId)}
           onChange={(e) => handleAddressSelection(e.target.value)}
+          className={styles.addressCardContainer}
         >
           {!loading &&
             addresses.map((addr) => (
-              <div key={addr.addressId} className={styles.addressRow}>
+              <div key={addr.addressId} className={styles.addressCard}>
                 <FormControlLabel
                   value={String(addr.addressId)}
                   control={<Radio />}
                   label={
-                    <div className={styles.addressOption}>
-                      <p>{`${addr.firstName} - ${addr.address}, ${addr.city}, ${addr.state}`}</p>
+                    <div className={styles.addressCardContent}>
+                      <div className={styles.addressType}>
+                        {addressTypeToString[addr.addressType]}
+                      </div>
+                      <div className={styles.addressDetails}>
+                        <p>
+                          <strong>First Name:</strong> {addr.firstName}
+                        </p>
+                        <p>
+                          <strong>Address:</strong> {addr.address}
+                        </p>
+                        <p>
+                          <strong>City:</strong> {addr.city}
+                        </p>
+                        <p>
+                          <strong>State:</strong> {addr.state}
+                        </p>
+                        <p>
+                          <strong>Locality:</strong> {addr.locality}
+                        </p>
+                        <p>
+                          <strong>Phone Number:</strong> {addr.phoneNumber}
+                        </p>
+                      </div>
                     </div>
                   }
                 />
@@ -174,6 +216,7 @@ const AddressForm = ({ onContinue, setAddressOpen }) => {
                   onClick={() => handleDeleteAddress(addr.addressId)}
                   color="error"
                   size="small"
+                  className={styles.deleteButton}
                 >
                   <Delete fontSize="small" />
                 </IconButton>
@@ -183,6 +226,7 @@ const AddressForm = ({ onContinue, setAddressOpen }) => {
             value="new"
             control={<Radio />}
             label="Add New Address"
+            className={styles.newAddressOption}
           />
         </RadioGroup>
       </div>
@@ -262,8 +306,8 @@ const AddressForm = ({ onContinue, setAddressOpen }) => {
                 <FormLabel component="legend">Type</FormLabel>
                 <RadioGroup
                   row
-                  name="type"
-                  value={formData.type}
+                  name="addressType"
+                  value={addressTypeToString[formData.addressType]}
                   onChange={handleChange}
                 >
                   {["Home", "Work", "Other"].map((type) => (

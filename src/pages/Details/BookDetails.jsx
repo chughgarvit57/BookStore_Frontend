@@ -107,7 +107,7 @@ const BookDetails = () => {
           <div className={styles.actionButtons}>
             <button
               className={styles.addToBagButton}
-              onClick={() => addBook(book.bookId, book.quantity || 1)}
+              onClick={() => addBook(book.bookId, 1)}
             >
               ADD TO BAG
             </button>

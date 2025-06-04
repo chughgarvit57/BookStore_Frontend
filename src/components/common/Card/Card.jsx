@@ -3,7 +3,7 @@ import { Rating } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import { useNavigate } from "react-router-dom";
 
-const Card = ({ title, author, price, bookImage, bookId }) => {
+const Card = ({ title, author, price, bookImage, bookId, quantity }) => {
   const navigate = useNavigate();
   const staticRating = 4.5;
   const staticRatingCount = 20;
@@ -11,13 +11,18 @@ const Card = ({ title, author, price, bookImage, bookId }) => {
 
   const handleCardClick = () => {
     navigate(`/book/details/${bookId}`);
-  }
+  };
 
   return (
     <>
       <div className={styles.card} onClick={handleCardClick}>
         <div className={styles.imageContainer}>
           <img src={bookImage} alt={title} className={styles.bookImage} />
+          {quantity === 0 && (
+            <div className={styles.outOfStockOverlay}>
+              <span className={styles.outOfStockText}>Out of Stock</span>
+            </div>
+          )}
         </div>
         <div className={styles.cardContent}>
           <h3 className={styles.title}>{title}</h3>

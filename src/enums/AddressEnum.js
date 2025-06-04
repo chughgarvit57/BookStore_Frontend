@@ -1,7 +1,7 @@
 const AddressType = {
-    HOME: 'HOME',
-    WORK: 'WORK',
-    OTHER: 'OTHER'
-}
+  HOME: 0,
+  WORK: 1,
+  OTHER: 2,
+};
 
 export default AddressType;

@@ -131,6 +131,7 @@ const Home = () => {
           <div className={styles.noBooksMessage}>No books available</div>
         ) : (
           currentBooks.map((book) => (
+            
             <Card
               key={book.bookId}
               title={book.bookName}
@@ -139,6 +140,7 @@ const Home = () => {
               price={book.price}
               bookImage={book.bookImage}
               bookId={book.bookId}
+              quantity={book.quantity}
             />
           ))
         )}

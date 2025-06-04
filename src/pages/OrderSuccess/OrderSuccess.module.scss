@@ -1,0 +1,17 @@
+.orderSuccessContainer {
+    margin: 2rem auto;
+    max-width: 1000px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.orderSuccessContainer img {
+    height: 150px;
+}
+
+.samllSuccessImage img {
+    height: 100px;
+}

@@ -17,7 +17,6 @@ const useAddCart = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("Book added in cart: " , response.data);
       setItems(response.data || []);
     } catch (error) {
       throw new Error(error);

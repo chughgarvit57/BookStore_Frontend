@@ -9,6 +9,8 @@ import SnackBar from "../../components/common/Snackbar/Snackbar";
 import useUpdateCart from "../../hooks/useUpdateCart";
 import AddressForm from "../Address/AddressForm";
 import useOrder from "../../hooks/useOrder";
+import { CircularProgress } from "@mui/material";
+import { v4 as uuidv4 } from "uuid";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -24,10 +26,10 @@ const Cart = () => {
   const [addressOpen, setAddressOpen] = useState(false);
   const [showOrderSummary, setShowOrderSummary] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [loading, setLoading] = useState(false);
   const { createOrder } = useOrder();
 
   const handleContinue = (address) => {
-    console.log("Selected address:", address);
     setSelectedAddress(address);
     setAddressOpen(false);
     setShowOrderSummary(true);
@@ -121,8 +123,16 @@ const Cart = () => {
         bookId: parseInt(item.bookId, 10),
         quantity: parseInt(item.quantity, 10),
       };
+      setLoading(true);
       await createOrder(orderRequest);
-      navigate("/orderSuccess");6
+      setLoading(false);
+      const tempOrderId = uuidv4();
+      navigate("/orderSuccess", {
+        state: {
+          orderId: tempOrderId,
+          address: selectedAddress,
+        },
+      });
       removeFromCart(orderRequest.bookId);
     } catch (error) {
       setSnackBarData({
@@ -285,7 +295,11 @@ const Cart = () => {
                       className={styles.checkoutButton}
                       onClick={handleCheckout}
                     >
-                      CHECKOUT
+                      {loading ? (
+                        <CircularProgress size={20} color="inherit" />
+                      ) : (
+                        "CHECKOUT"
+                      )}
                     </button>
                   </div>
                 </div>
