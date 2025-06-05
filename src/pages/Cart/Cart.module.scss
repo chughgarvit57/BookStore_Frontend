@@ -37,6 +37,19 @@
   align-items: center;
 }
 
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.clearCart {
+  padding: .5rem 2rem;
+  cursor: pointer;
+  background-color: red;
+  color: white;
+}
+
 .cartContent {
   height: auto;
 }

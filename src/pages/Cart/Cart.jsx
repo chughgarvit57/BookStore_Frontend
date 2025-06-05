@@ -11,6 +11,8 @@ import AddressForm from "../Address/AddressForm";
 import useOrder from "../../hooks/useOrder";
 import { CircularProgress } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
+import useClearCart from "../../hooks/useClearCart";
+import DialogBox from "../../components/common/Dialog/Dialog";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -28,6 +30,16 @@ const Cart = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [loading, setLoading] = useState(false);
   const { createOrder } = useOrder();
+  const { clearCart } = useClearCart();
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
 
   const handleContinue = (address) => {
     setSelectedAddress(address);
@@ -51,10 +63,10 @@ const Cart = () => {
     navigate("/home");
   };
 
+  const fetchCart = async () => {
+    await getCart();
+  };
   useEffect(() => {
-    const fetchCart = async () => {
-      await getCart();
-    };
     fetchCart();
   }, []);
 
@@ -143,6 +155,18 @@ const Cart = () => {
     }
   };
 
+  const handleClearCart = async () => {
+    await clearCart();
+    setItems([]);
+    setSnackBarData({
+      open: true,
+      message: "Cart cleared",
+      severity: "success",
+    });
+    setDialogOpen(false);
+    await getCart();
+  };
+
   return (
     <>
       <div className={styles.breadcrumb}>
@@ -155,9 +179,16 @@ const Cart = () => {
       <div className={styles.cartContainer}>
         <div className={styles.cartHeader}>
           <h2>My Cart ({cartItems.length})</h2>
-          <div className={styles.location}>
-            <MapPin size={16} className={styles.locationIcon} />
-            <span>Use current location</span>
+          <div className={styles.headerActions}>
+            <div className={styles.location}>
+              <MapPin size={16} className={styles.locationIcon} />
+              <span>Use current location</span>
+            </div>
+            {cartItems.length > 0 && (
+              <p className={styles.clearCart} onClick={handleOpenDialog}>
+                Clear Cart
+              </p>
+            )}
           </div>
         </div>
         <div className={styles.cartContent}>
@@ -315,6 +346,15 @@ const Cart = () => {
         onClose={handleCloseSnackBar}
         severity={snackbarData.severity}
         message={snackbarData.message}
+      />
+      <DialogBox
+        open={dialogOpen}
+        handleClose={handleCloseDialog}
+        title="Clear Cart"
+        description="Are you sure you want to clear your entire cart?"
+        color="error"
+        buttonText="Clear"
+        handleOperation={handleClearCart}
       />
     </>
   );

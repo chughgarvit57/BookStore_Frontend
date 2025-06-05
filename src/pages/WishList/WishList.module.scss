@@ -27,6 +27,16 @@
     padding: 0.75rem 1.5rem;
     margin-top: 15px;
     background-color: #F5F5F5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.bar .emptyWishList {
+  padding: .5rem 2rem;
+  cursor: pointer;
+  background-color: red;
+  color: white;
 }
 
 .wishListItemCard {

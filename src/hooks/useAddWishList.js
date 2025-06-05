@@ -51,7 +51,27 @@ const useAddWishList = () => {
     }
   };
 
-  return { addBookToWishList, getBooksInWIshlist, removeFromWishList };
+  const clearWishList = async () => {
+    try {
+      await request({
+        method: "DELETE",
+        url: "/api/WishList/ClearWishList",
+        data: null,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (error) {
+      return error.response?.data?.message;
+    }
+  };
+
+  return {
+    addBookToWishList,
+    getBooksInWIshlist,
+    removeFromWishList,
+    clearWishList,
+  };
 };
 
 export default useAddWishList;
