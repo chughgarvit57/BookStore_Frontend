@@ -69,7 +69,6 @@ const Cart = () => {
   };
 
   const cartItems = Array.isArray(items) ? items : [];
-  const filteredCartItems = cartItems.filter((item) => !item.isUncarted);
 
   const handleIncreaseQuantity = async (bookId, currentQuantity) => {
     const newQuantity = currentQuantity + 1;
@@ -117,7 +116,7 @@ const Cart = () => {
 
   const handleCheckout = async () => {
     try {
-      const item = filteredCartItems[0];
+      const item = cartItems[0];
       const orderRequest = {
         addressId: parseInt(selectedAddress.addressId, 10),
         bookId: parseInt(item.bookId, 10),
@@ -155,14 +154,14 @@ const Cart = () => {
       </div>
       <div className={styles.cartContainer}>
         <div className={styles.cartHeader}>
-          <h2>My Cart ({filteredCartItems.length})</h2>
+          <h2>My Cart ({cartItems.length})</h2>
           <div className={styles.location}>
             <MapPin size={16} className={styles.locationIcon} />
             <span>Use current location</span>
           </div>
         </div>
         <div className={styles.cartContent}>
-          {filteredCartItems.length === 0 ? (
+          {cartItems.length === 0 ? (
             <div className={styles.emptyCart}>
               <div className={styles.emptyCartContent}>
                 <h3>No Items in Cart</h3>
@@ -177,7 +176,7 @@ const Cart = () => {
             </div>
           ) : (
             <>
-              {filteredCartItems.map((item) => (
+              {cartItems.map((item) => (
                 <div className={styles.cartItem} key={item.bookId}>
                   <div className={styles.leftBox}>
                     <div className={styles.cartItemImageContainer}>
@@ -252,7 +251,7 @@ const Cart = () => {
           <p className={styles.addressBoxTitle}>Order Summary</p>
         </div>
         {showOrderSummary ? (
-          filteredCartItems.length > 0 ? (
+          cartItems.length > 0 ? (
             <div className={styles.orderSummaryContent}>
               {selectedAddress && (
                 <div className={styles.selectedAddress}>
@@ -263,7 +262,7 @@ const Cart = () => {
                   </p>
                 </div>
               )}
-              {filteredCartItems.map((item) => (
+              {cartItems.map((item) => (
                 <div className={styles.cartItem} key={item.bookId}>
                   <div className={styles.leftBox}>
                     <div className={styles.cartItemImageContainer}>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Orders.module.scss";
 import useFetchOrders from "../../hooks/useOrder";
+import formatDate from "../../utils/DateFormatter";
 
 const Orders = () => {
   const navigate = useNavigate();
@@ -57,12 +58,13 @@ const Orders = () => {
               <div className={styles.orderDetails}>
                 <h3 className={styles.bookTitle}>{order.bookName}</h3>
                 <p className={styles.authorName}>by {order.author}</p>
-                <p>Quantity: {order.orderedQuantity}</p>
                 <div className={styles.priceContainer}>
                   <span className={styles.currentPrice}>Rs. {order.price}</span>
                 </div>
               </div>
-              <div className={styles.orderDate}></div>
+              <div className={styles.orderDate}>
+                <p>Ordered on: {formatDate(order.orderedDate)}</p>
+              </div>
             </div>
           ))}
         </div>

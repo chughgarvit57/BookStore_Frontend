@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useFetchBooks } from "../../hooks/useFetchBooks";
 import styles from "./BookDetails.module.scss";
 import { Rating } from "@mui/material";
@@ -8,8 +8,10 @@ import { useBooks } from "../../context/BookContext";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import useAddCart from "../../hooks/useAddCart";
 import SnackBar from "../../components/common/Snackbar/Snackbar";
+import useAddWishList from "../../hooks/useAddWishList";
 
 const BookDetails = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const { getBookById } = useFetchBooks();
   const { books } = useBooks();
@@ -17,6 +19,7 @@ const BookDetails = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { addBookInCart } = useAddCart();
+  const { addBookToWishList } = useAddWishList();
 
   const [snackbarData, setSnackbarData] = useState({
     open: false,
@@ -77,6 +80,26 @@ const BookDetails = () => {
     }
   };
 
+  const handleAddInWishlist = async (bookId) => {
+    try {
+      await addBookToWishList(bookId);
+      setSnackbarData({
+        open: true,
+        message: "Item wishlisted",
+        severity: "success",
+      });
+      setTimeout(() => {
+        navigate("/myWishList");
+      }, 1000);
+    } catch (error) {
+      setSnackbarData({
+        open: true,
+        message: error,
+        severity: "error",
+      });
+    }
+  };
+
   if (loading) {
     return <div className={styles.loadingMessage}>Loading book details...</div>;
   }
@@ -108,10 +131,17 @@ const BookDetails = () => {
             <button
               className={styles.addToBagButton}
               onClick={() => addBook(book.bookId, 1)}
+              disabled={book.quantity === 0}
             >
-              ADD TO BAG
+              {book.quantity === 0 ? "NOTIFY ME" : "ADD TO BAG"}
             </button>
-            <button className={styles.wishlistButton}>
+            <button
+              className={styles.wishlistButton}
+              onClick={() => {
+                handleAddInWishlist(book.bookId);
+              }}
+              disabled={book.quantity === 0}
+            >
               <FavoriteBorderIcon className={styles.wishlistIcon} />
               WISHLIST
             </button>
@@ -141,11 +171,18 @@ const BookDetails = () => {
             </span>
             <span className={styles.ratingCount}>({staticRatingCount})</span>
           </div>
+          <div className={styles.stockContainer}>
+            <span className={styles.stockText}>{` ${
+              book.quantity > 0
+                ? `In stock: ${book.quantity}`
+                : "Book Out Of Stock!"
+            } `}</span>
+          </div>
           <hr />
           <p className={styles.description}>{book.description}</p>
           <div className={styles.priceContainer}>
-            <span className={styles.price}>₹{book.price}</span>
-            <span className={styles.originalPrice}>₹{book.price + 500}</span>
+            <span className={styles.price}>Rs {book.price}</span>
+            <span className={styles.originalPrice}>Rs {book.price + 500}</span>
           </div>
           <hr />
           <div className={styles.feedbackContainer}>

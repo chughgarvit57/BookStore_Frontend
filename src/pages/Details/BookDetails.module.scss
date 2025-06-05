@@ -171,6 +171,18 @@
   }
 }
 
+.stockText {
+  color: #28a745;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.addToBagButton:disabled,
+.wishlistButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .feedbackContainer {
   display: flex;
   flex-direction: column;

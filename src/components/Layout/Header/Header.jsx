@@ -43,6 +43,10 @@ const Header = () => {
     navigate("/cart");
   };
 
+  const navigateToWishlist = () => {
+    navigate("/myWishList");
+  };
+
   return (
     <header className={styles.header}>
       <div className={styles.headerContainer}>
@@ -95,7 +99,7 @@ const Header = () => {
                 </div>
                 <div className={styles.dropdownItem}>
                   <Heart size={16} />
-                  <span>Wishlist</span>
+                  <span onClick={navigateToWishlist}>Wishlist</span>
                 </div>
               </div>
             )}
